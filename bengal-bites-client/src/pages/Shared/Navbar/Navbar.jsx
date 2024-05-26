@@ -18,7 +18,7 @@ const Navbar = () => {
                         </ul>
                     </div>
                     <Link to='/'>
-                    <img src="/public/BengalBites4.png" alt="" />
+                    <img src="/public/BengalBites.png" alt="" />
                     </Link>
                 </div>
                 <div className="navbar-center hidden lg:flex">
