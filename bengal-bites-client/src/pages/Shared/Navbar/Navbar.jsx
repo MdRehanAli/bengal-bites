@@ -4,6 +4,7 @@ const Navbar = () => {
     const navOptions = <>
         <li><Link to="/">Home</Link></li>
         <li><Link to="/menu">Our Menu</Link></li>
+        <li><Link to="/order">Order Food</Link></li>
     </>
     return (
         <div>
@@ -18,7 +19,7 @@ const Navbar = () => {
                         </ul>
                     </div>
                     <Link to='/'>
-                    <img src="/public/BengalBites.png" alt="" />
+                    <img src="/BengalBites.png" alt="" />
                     </Link>
                 </div>
                 <div className="navbar-center hidden lg:flex">
