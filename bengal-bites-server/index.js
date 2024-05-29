@@ -29,9 +29,17 @@ async function run() {
 
 
     const menuCollection = client.db("bengalBites").collection("menu");
+    const reviewsCollection = client.db("bengalBites").collection("reviews");
 
+    // Menu Data 
     app.get('/menu', async(req, res) => {
       const result = await menuCollection.find().toArray()
+      res.send(result)
+    })
+
+    // Review Data 
+    app.get('/reviews', async(req, res) => {
+      const result = await reviewsCollection.find().toArray()
       res.send(result)
     })
 
