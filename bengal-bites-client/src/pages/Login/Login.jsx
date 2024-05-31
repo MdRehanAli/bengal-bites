@@ -84,7 +84,7 @@ const Login = () => {
                                     <input disabled={disabled} className="btn btn-primary" type="submit" value="Login" />
                                 </div>
                             </form>
-                            <p><small>New Here? <Link to="/signup"> Create a new Account</Link></small></p>
+                            <p className="text-center mb-8">New Here? <small className="text-blue-800 text-lg"> <Link to="/signup"> Create a new Account</Link></small></p>
                         </div>
                     </div>
                 </div>
