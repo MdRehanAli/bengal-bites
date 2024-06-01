@@ -2,8 +2,6 @@ import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
-
-
 const SignUp = () => {
     const {
         register,
@@ -46,22 +44,20 @@ const SignUp = () => {
                                     <label className="label">
                                         <span className="label-text">Password</span>
                                     </label>
-                                    <input type="password" name="password" {...register("password", { required: true, maxLength: 20, minLength: 6 })} placeholder="password" className="input input-bordered" />
-                                    {errors.password?.type === "required" && (
-                                        <p className="text-red-600">Password is required</p>
+                                    <input type="password" name="password" {...register("password", { required: true, maxLength: 20, minLength: 6, pattern: /(?=.*\d)(?=.*[!@#$%^&*])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/})} placeholder="password" className="input input-bordered" />
+                                    {errors.password?.type === "minLength" && (
+                                        <p className="text-red-600">Password must be 6 characters.</p>
+                                    )}
+                                    {errors.password?.type === "maxLength" && (
+                                        <p className="text-red-600">Password must be Less than 20 characters.</p>
+                                    )}
+                                    {errors.password?.type === "pattern" && (
+                                        <p className="text-red-600">Password must have one Uppercase, One lowercase, one number and one Special character.</p>
                                     )}
                                     <label className="label">
-                                        <a href="#" className="label-text-alt link link-hover">Forgot password?</a>                                    </label>
-                                </div>
-                                {/* <div className="form-control">
-                                    <LoadCanvasTemplate />
-                                    <label className="label">
-                                        <span className="label-text">Password</span>
+                                        <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                                     </label>
-                                    <input type="text" ref={captchaRef} name="captcha" placeholder="Type the captcha" className="input input-bordered" required />
-
-                                    <button onClick={handleValidateCaptcha} className="btn btn-outline btn-accent btn-xs">Validate</button>
-                                </div> */}
+                                </div>
                                 <div className="form-control mt-6">
                                     <input className="btn btn-primary" type="submit" value="Sign Up" />
                                 </div>
