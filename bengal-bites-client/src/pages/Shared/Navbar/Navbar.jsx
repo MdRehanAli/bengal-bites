@@ -15,12 +15,14 @@ const Navbar = () => {
         <li><Link to="/">Home</Link></li>
         <li><Link to="/menu">Our Menu</Link></li>
         <li><Link to="/order/salad">Order Food</Link></li>
+        <li><Link to="/secret">Secret</Link></li>
         {
             user ? <>
                 <li onClick={handleLogOut}><Link to="/">Log Out</Link></li>
+                <li>{user?.displayName} </li>
             </> :
                 <>
-                    <li><Link to="/login">Login</Link></li>
+                    <li className="text-center "><Link to="/login">Login</Link></li>
                 </>
         }
     </>
