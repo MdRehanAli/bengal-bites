@@ -3,7 +3,7 @@ import orderCover from '../../../assets/order/menuBg1.png'
 import Cover from '../../Shared/Cover/Cover';
 import 'react-tabs/style/react-tabs.css';
 import { useState } from 'react';
-import useMenu from '../../../Layout/useMenu';
+import useMenu from '../../../hooks/useMenu';
 import OrderTab from '../OrderTab/OrderTab';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';

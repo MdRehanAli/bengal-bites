@@ -1,7 +1,15 @@
+import { useContext } from "react";
+import { AuthContext } from "../../../Providers/AuthProvider";
 
 
 const FoodCard = ({item}) => {
     const {name, image, price, recipe} = item
+    const user = useContext(AuthContext)
+
+    const handleAddToCart = food => {
+        console.log(food);
+    }
+
     return (
         <div className="card w-96 bg-base-100 shadow-xl">
             <figure><img src={image} alt="Food Image" /></figure>
@@ -10,7 +18,9 @@ const FoodCard = ({item}) => {
                 <h2 className="text-2xl">{name}</h2>
                 <p>{recipe}</p>
                 <div className="card-actions justify-end">
-                    <button className="btn btn-outline bg-slate-900 border-orange-400 border-0 border-b-4">Buy Now</button>
+                    <button
+                    onClick={() => handleAddToCart(item)}
+                    className="btn btn-outline bg-slate-900 border-orange-400 border-0 border-b-4">Buy Now</button>
                 </div>
             </div>
         </div>

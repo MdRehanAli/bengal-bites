@@ -7,7 +7,7 @@ import pizzaImage from '../../../assets/menu/menuBg8.png'
 import soupImage from '../../../assets/menu/menuBg5.png'
 import saladImage from '../../../assets/menu/menuBg4.png'
 
-import useMenu from "../../../Layout/useMenu";
+import useMenu from "../../../hooks/useMenu";
 import SectionTitle from "../../../components/SectionTitle/SectionTitle";
 import MenuCategory from "../MenuCategory/MenuCategory";
 

@@ -30,6 +30,7 @@ async function run() {
 
     const menuCollection = client.db("bengalBites").collection("menu");
     const reviewsCollection = client.db("bengalBites").collection("reviews");
+    const cartsCollection = client.db("bengalBites").collection("carts");
 
     // Menu Data 
     app.get('/menu', async(req, res) => {
@@ -40,6 +41,13 @@ async function run() {
     // Review Data 
     app.get('/reviews', async(req, res) => {
       const result = await reviewsCollection.find().toArray()
+      res.send(result)
+    })
+
+    // carts collection 
+    app.post('/carts', async(req, res) => {
+      const cartItem = req.body
+      const result = await cartsCollection.insertOne(cartItem)
       res.send(result)
     })
 
@@ -64,3 +72,18 @@ app.get('/', (req, res) => {
 app.listen(port, ()=> {
     console.log(`Server is running on port ${port}`)
 })
+
+
+
+/**
+ * ---------------------------
+ *      NAMING CONVENTION
+ * ---------------------------
+ * 
+ * app.get('/users')
+ * app.get('/users:id')
+ * app.post('/users')
+ * app.put('/users:id')
+ * app.patch('/users:id')
+ * app.delete('/users:id')
+ */ 
