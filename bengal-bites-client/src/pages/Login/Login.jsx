@@ -16,7 +16,7 @@ const Login = () => {
     const location = useLocation()
 
     const from = location.state?.from?.pathname || "/";
-    console.log("state in the location login Page:", location.state)
+    console.log("state in the location of login Page:", location.state)
 
 
 
@@ -107,7 +107,8 @@ const Login = () => {
                                     {/* <button className="btn btn-outline btn-accent btn-xs">Validate</button> */}
                                 </div>
                                 <div className="form-control mt-6">
-                                    <input disabled={disabled} className="btn btn-primary" type="submit" value="Login" />
+                                    {/* {TO do : apply disable for re captcha} */}
+                                    <input disabled={false} className="btn btn-primary" type="submit" value="Login" />
                                 </div>
                             </form>
                             <p className="text-center mb-8">New Here? <small className="text-blue-800 text-lg"> <Link to="/signup"> Create a new Account</Link></small></p>
