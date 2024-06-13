@@ -28,9 +28,17 @@ async function run() {
     await client.connect();
 
 
+    const userCollection = client.db("bengalBites").collection("users");
     const menuCollection = client.db("bengalBites").collection("menu");
     const reviewsCollection = client.db("bengalBites").collection("reviews");
     const cartsCollection = client.db("bengalBites").collection("carts");
+
+    // users related api 
+    app.post('/users', async (req, res) => {
+      const user = req.body
+      const result = await userCollection.insertOne(user)
+      res.send(result)
+    })
 
     // Menu Data 
     app.get('/menu', async(req, res) => {
