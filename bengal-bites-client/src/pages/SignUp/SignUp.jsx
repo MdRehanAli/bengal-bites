@@ -4,8 +4,12 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Providers/AuthProvider";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const SignUp = () => {
+
+    const axiosPublic = useAxiosPublic()
+
     const {
         register,
         handleSubmit,
@@ -13,32 +17,45 @@ const SignUp = () => {
         formState: { errors },
     } = useForm()
 
-    const {createUser, updateUserProfile} = useContext(AuthContext)
+    const { createUser, updateUserProfile } = useContext(AuthContext)
 
     const Navigate = useNavigate()
 
     const onSubmit = (data) => {
-        console.log(data)
+        // console.log(data)
         createUser(data.email, data.password)
-        .then (result => {
-            const loggedUser = result.user
-            console.log(loggedUser)
-            updateUserProfile(data.name, data.photoURL)
-            .then(() => {
-                console.log('User Profile info updated')
-                reset()
+            .then(result => {
+                const loggedUser = result.user
+                console.log(loggedUser)
+                updateUserProfile(data.name, data.photoURL)
+                    .then(() => {
+                        // console.log('User Profile info updated')
 
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Registration Completed",
-                    showConfirmButton: false,
-                    timer: 1500
-                  });
-                Navigate("/")
+                        // create user entry in the data base  
+
+                        const userInfo = {
+                            name: data.name,
+                            email: data.email
+                        }
+                        axiosPublic.post('/users', userInfo)
+                            .then(res => {
+                                if (res.data.insertedId) {
+                                    console.log("user added to the database")
+                                    reset()
+
+                                    Swal.fire({
+                                        position: "top-end",
+                                        icon: "success",
+                                        title: "Registration Completed",
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+                                    Navigate("/")
+                                }
+                            })
+                    })
+                    .catch(error => console.log(error))
             })
-            .catch(error => console.log(error))
-        })
     }
     // console.log(watch("example"))
 
@@ -81,7 +98,7 @@ const SignUp = () => {
                                     <label className="label">
                                         <span className="label-text">Password</span>
                                     </label>
-                                    <input type="password" name="password" {...register("password", { required: true, maxLength: 20, minLength: 6, pattern: /(?=.*\d)(?=.*[!@#$%^&*])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/})} placeholder="password" className="input input-bordered" />
+                                    <input type="password" name="password" {...register("password", { required: true, maxLength: 20, minLength: 6, pattern: /(?=.*\d)(?=.*[!@#$%^&*])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/ })} placeholder="password" className="input input-bordered" />
                                     {errors.password?.type === "minLength" && (
                                         <p className="text-red-600">Password must be 6 characters.</p>
                                     )}
