@@ -1,6 +1,6 @@
 import {
     createBrowserRouter,
-  } from "react-router-dom";
+} from "react-router-dom";
 import Main from "../Layout/Main";
 import Home from "../pages/Home/Home/Home";
 import Menu from "../pages/Menu/Menu/Menu";
@@ -12,41 +12,41 @@ import Secret from "../pages/Shared/Secret/Secret";
 import Dashboard from "../Layout/Dashboard";
 import Cart from "../pages/Dashboard/Cart/Cart";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
- 
+
 export const router = createBrowserRouter([
     {
-      path: "/",
-      element: <Main></Main>,
-      children:[
-        {
-            path: '/',
-            element: <Home></Home>,
-        },
-        {
-            path: '/menu',
-            element: <Menu></Menu>,
-        },
-        {
-            path: '/order',
-            element: <Order></Order>,
-        },
-        {
-            path: '/order/:category',
-            element: <Order></Order>,
-        },
-        {
-            path: 'login',
-            element: <Login></Login>,
-        },
-        {
-            path: 'signup',
-            element: <SignUp></SignUp>,
-        },
-        {
-            path: 'secret',
-            element: <PrivateRoutes><Secret></Secret></PrivateRoutes>
-        },
-      ]
+        path: "/",
+        element: <Main></Main>,
+        children: [
+            {
+                path: '/',
+                element: <Home></Home>,
+            },
+            {
+                path: '/menu',
+                element: <Menu></Menu>,
+            },
+            {
+                path: '/order',
+                element: <Order></Order>,
+            },
+            {
+                path: '/order/:category',
+                element: <Order></Order>,
+            },
+            {
+                path: 'login',
+                element: <Login></Login>,
+            },
+            {
+                path: 'signup',
+                element: <SignUp></SignUp>,
+            },
+            {
+                path: 'secret',
+                element: <PrivateRoutes><Secret></Secret></PrivateRoutes>
+            },
+        ]
     },
     {
         path: 'dashboard',
@@ -54,7 +54,7 @@ export const router = createBrowserRouter([
         children: [
             {
                 path: 'cart',
-                element: <Cart></Cart> 
+                element: <Cart></Cart>
             },
 
             // Admin Routes 
@@ -64,4 +64,4 @@ export const router = createBrowserRouter([
             },
         ]
     }
-  ]);
+]);
