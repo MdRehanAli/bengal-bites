@@ -44,7 +44,7 @@ const UpdateItem = () => {
 
 
             if (menuRes.data.modifiedCount > 0) {
-                // reset()
+                reset()
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
