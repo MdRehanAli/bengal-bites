@@ -13,7 +13,7 @@ const useMenu = () => {
     // const [loading, setLoading] = useState(true)
 
     // useEffect(() => {
-    //     fetch('http://localhost:5000/menu')
+    //     fetch('https://bengal-bites-server.vercel.app/menu')
     //     .then(res => res.json())
     //     .then(data => {
     //         setMenu(data)

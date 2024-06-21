@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express()
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 const port = process.env.PORT || 5000
 
@@ -26,12 +27,13 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const userCollection = client.db("bengalBites").collection("users");
     const menuCollection = client.db("bengalBites").collection("menu");
     const reviewsCollection = client.db("bengalBites").collection("reviews");
     const cartsCollection = client.db("bengalBites").collection("carts");
+    const paymentCollection = client.db("bengalBites").collection("payments");
 
 
     // JWT related API 
@@ -43,7 +45,7 @@ async function run() {
 
     // middlewares 
     const verifyToken = (req, res, next) => {
-      console.log('Inside verify token', req.headers.authorization)
+      // console.log('Inside verify token', req.headers.authorization)
 
       if (!req.headers.authorization) {
         return res.status(401).send({ message: 'Unauthorized access' })
@@ -149,10 +151,10 @@ async function run() {
       res.send(result)
     })
 
-    app.patch('/menu/:id', async (req, res) =>{
+    app.patch('/menu/:id', async (req, res) => {
       const item = req.body
       const id = req.params.id
-      const filter = {_id: new ObjectId(id)}
+      const filter = { _id: new ObjectId(id) }
       const updatedDoc = {
         $set: {
           name: item.name,
@@ -201,10 +203,138 @@ async function run() {
       res.send(result);
     })
 
+    // Payment Intent 
+    app.post('/create-payment-intent', async (req, res) => {
+      const { price } = req.body
+      const amount = parseInt(price * 100)
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd',
+        payment_method_types: ['card']
+      })
+
+      res.send({
+        clientSecret: paymentIntent.client_secret
+      })
+    })
+
+
+    // Payment Related API 
+
+    app.get('/payments/:email', verifyToken, async (req, res) => {
+      const query = { email: req.params.email }
+      if (req.params.email !== req.decoded.email) {
+        return res.status(403).send({ message: 'Forbidden Access' })
+      }
+      const result = await paymentCollection.find(query).toArray()
+      res.send(result)
+    })
+
+    app.post('/payments', async (req, res) => {
+      const payment = req.body
+      const paymentResult = await paymentCollection.insertOne(payment)
+
+
+      // carefully delete each item from the cart 
+      console.log('payment info', payment)
+      const query = {
+        _id: {
+          $in: payment.cartIds.map(id => new ObjectId(id))
+        }
+      }
+
+      const deleteResult = await cartsCollection.deleteMany(query)
+
+      res.send({ paymentResult, deleteResult })
+    })
+
+
+    // Stats or analytics 
+    app.get('/admin-stats', verifyToken, verifyAdmin, async (req, res) => {
+      const users = await userCollection.estimatedDocumentCount()
+      const menuItems = await menuCollection.estimatedDocumentCount()
+      const orders = await paymentCollection.estimatedDocumentCount()
+
+      //this is not the best way 
+      // const payments = await paymentCollection.find().toArray()
+      // const revenue = payments.reduce((total, payment) => total + payment.price , 0)
+
+      const result = await paymentCollection.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalRevenue: {
+              $sum: "$price"
+            }
+          }
+        },
+      ]).toArray()
+
+      const revenue = result.length > 0 ? result[0].totalRevenue : 0
+
+      res.send({
+        users,
+        menuItems,
+        orders,
+        revenue
+      })
+    })
+
+    //order status
+    /**
+     * --------------------
+     * Non Efficient Way
+     * --------------------
+     * 1. load all the payments 
+     * 2. for every menuItemIds (which is an array), go find the item for menu collection
+     * 3. for every item in the menu collection tha you found from a payment entry (document)
+     */
+
+    //Using Aggregate pipeline
+
+    app.get('/order-stats', verifyToken, verifyAdmin, async (req, res) => {
+      const result = await paymentCollection.aggregate([
+        {
+          $unwind: '$menuItemIds'
+        },
+        {
+          $lookup: {
+            from: 'menu',
+            localField: 'menuItemIds',
+            foreignField: '_id',
+            as: 'menuItems'
+          }
+        },
+        {
+          $unwind: '$menuItems'
+        },
+        {
+          $group: {
+            _id: '$menuItems.category',
+            quantity: {
+              $sum: 1
+            },
+            revenue: {
+              $sum: "$menuItems.price"
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            category: '$_id',
+            quantity: '$quantity',
+            revenue: '$revenue'
+          }
+        }
+      ]).toArray()
+      res.send(result)
+    })
+
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // await client.db("admin").command({ ping: 1 });
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
